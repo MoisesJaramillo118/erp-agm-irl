@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16
+    container_name: erp-agm-irl-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-erp_agm_irl}
+      POSTGRES_USER: ${DB_USER:-erp_agm}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en el archivo .env}
+      TZ: America/Lima
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - erp_agm_irl_datos:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-erp_agm} -d ${DB_NAME:-erp_agm_irl}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  erp_agm_irl_datos:
