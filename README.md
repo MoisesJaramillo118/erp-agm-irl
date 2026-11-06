@@ -18,7 +18,7 @@ Apps del backend: `usuarios`, `ventas`, `inventario`, `distribucion` y `recomend
 |---|---|---|
 | 0 | Preparación: repositorio, Docker, 13 modelos, JWT, admin, `seed_demo`, React con inicio de sesión y menú por rol | ✅ listo — [Sprint Review](docs/sprints/sprint-0/review.md) |
 | 1 | Ventas (HU01 a HU04): usuarios y roles, clientes, stock disponible con reserva, registro de pedido | ✅ listo — [Sprint Review](docs/sprints/sprint-1/review.md) |
-| 2 | Inventario (HU05 a HU08) | pendiente |
+| 2 | Inventario (HU05 a HU08): pedidos por preparar en orden de llegada, conformidad con descuento de stock, ingresos de mercadería y conteo físico con exactitud | ✅ listo — [Sprint Review](docs/sprints/sprint-2/review.md) |
 | 3 | Distribución (HU09 a HU11) | pendiente |
 | 4 | Recomendaciones explicadas (HU12 a HU15) | pendiente |
 
@@ -78,7 +78,7 @@ En desarrollo, Vite envía las llamadas `/api` al servidor Django, así que no h
 | Usuario | Rol | Qué ve |
 |---|---|---|
 | `demo_vendedor` | Vendedor | Nuevo pedido, clientes, consulta de stock disponible |
-| `demo_almacenero` | Almacenero | Pedidos por preparar, ingreso de mercadería, conteo físico |
+| `demo_almacenero` | Almacenero | Pedidos por preparar (se actualiza sola), ingreso de mercadería con historial de movimientos, conteo físico con exactitud |
 | `demo_repartidor` | Repartidor | Entregas programadas |
 | `demo_gerente` | Gerente | Todo, más recomendaciones, reportes y administración de usuarios |
 
