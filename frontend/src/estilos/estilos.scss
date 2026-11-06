@@ -1176,3 +1176,136 @@ a.card,
     font-weight: 500;
   }
 }
+
+// ---------- 14. Almacén (Sprint 2) ----------
+.en-vivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--agm-texto-suave);
+  align-self: center;
+
+  .pulso {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: $success;
+    animation: pulso 2s infinite;
+  }
+}
+
+@keyframes pulso {
+  0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.45); }
+  70% { box-shadow: 0 0 0 0.5rem rgba(22, 163, 74, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+}
+
+.fila-cola {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.9rem 1.25rem;
+  border: 0;
+  border-bottom: 1px solid #eef1f6;
+  background: transparent;
+  color: inherit;
+  transition: background-color 0.15s;
+
+  &:hover { background: #f8fafc; }
+
+  &.activa {
+    background: #eef4ff;
+    box-shadow: inset 3px 0 0 $primary;
+  }
+
+  &.nueva { animation: llegada 3s ease-out; }
+
+  .turno {
+    flex-shrink: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  &.activa .turno {
+    background: $primary;
+    color: #fff;
+  }
+}
+
+@keyframes llegada {
+  from { background: #dbeafe; }
+  to { background: transparent; }
+}
+
+.tabla-preparar {
+  tbody tr { cursor: pointer; }
+  tr.listo td { background: #f0fdf4; }
+  tr.listo .nombre { text-decoration: line-through; color: var(--agm-texto-suave); }
+}
+
+.check-listo .form-check-input {
+  width: 1.4rem;
+  height: 1.4rem;
+  cursor: pointer;
+  margin: 0;
+}
+
+.progreso-listos { height: 0.45rem; }
+
+.fila-enlace { cursor: pointer; }
+.fila-diferencia td { background: #fffbfb; }
+
+.campo-contado { width: 7rem; }
+
+.chip:disabled { opacity: 0.6; }
+
+.anillo-exactitud {
+  position: relative;
+  flex-shrink: 0;
+  width: 8.5rem;
+  height: 8.5rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(var(--color) calc(var(--valor) * 1%), #eef1f6 0);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0.8rem;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .valor {
+    position: relative;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .anillo-exactitud {
+    width: 6.5rem;
+    height: 6.5rem;
+
+    .valor { font-size: 1.25rem; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .en-vivo .pulso,
+  .fila-cola.nueva { animation: none; }
+}

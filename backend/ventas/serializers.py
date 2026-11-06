@@ -47,11 +47,12 @@ class ClienteSerializer(serializers.ModelSerializer):
 class DetallePedidoSerializer(serializers.ModelSerializer):
     codigo = serializers.CharField(source="producto.codigo", read_only=True)
     descripcion = serializers.CharField(source="producto.descripcion", read_only=True)
+    unidad = serializers.CharField(source="producto.unidad", read_only=True)
     subtotal = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
 
     class Meta:
         model = DetallePedido
-        fields = ("producto", "codigo", "descripcion", "cantidad", "precio_unitario", "subtotal")
+        fields = ("producto", "codigo", "descripcion", "unidad", "cantidad", "precio_unitario", "subtotal")
 
 
 class PedidoSerializer(serializers.ModelSerializer):

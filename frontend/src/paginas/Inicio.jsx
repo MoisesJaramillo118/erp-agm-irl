@@ -20,7 +20,8 @@ const RESUMEN = {
     { ruta: '/ventas/clientes/', icono: 'bi-people', tono: 'violeta', etiqueta: 'Clientes registrados', enlace: '/ventas/clientes' },
   ],
   almacenero: [
-    { ...PEDIDOS_EN_ALMACEN, etiqueta: 'Pedidos por preparar', enlace: '/inventario/pedidos' },
+    { ...PEDIDOS_EN_ALMACEN, ruta: '/inventario/pedidos/', etiqueta: 'Pedidos por preparar', enlace: '/inventario/pedidos' },
+    { ruta: '/inventario/pedidos/?conformes_hoy=1', icono: 'bi-check2-circle', tono: 'verde', etiqueta: 'Pedidos conformes hoy', enlace: '/inventario/pedidos' },
     { ...BAJO_MINIMO, enlace: null },
     { ...SIN_STOCK, enlace: null },
   ],

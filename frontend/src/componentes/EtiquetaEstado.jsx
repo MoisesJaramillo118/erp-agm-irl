@@ -23,6 +23,16 @@ const ESTADOS = {
   // Cliente
   intermedio: { texto: 'Intermedio', clase: 'primario' },
   final: { texto: 'Final', clase: 'violeta' },
+  // Almacén
+  nuevo: { texto: 'Nuevo', clase: 'primario', icono: 'bi-stars' },
+  conforme: { texto: 'Conforme', clase: 'exito', icono: 'bi-check2-circle' },
+  // Movimiento de inventario
+  entrada: { texto: 'Entrada', clase: 'exito', icono: 'bi-box-arrow-in-down' },
+  salida: { texto: 'Salida', clase: 'info', icono: 'bi-box-arrow-up' },
+  ajuste: { texto: 'Ajuste', clase: 'violeta', icono: 'bi-sliders' },
+  // Conteo físico
+  coincide: { texto: 'Coincide', clase: 'exito', icono: 'bi-check2' },
+  diferencia: { texto: 'Diferencia', clase: 'peligro', icono: 'bi-exclamation-triangle' },
 }
 
 export default function EtiquetaEstado({ estado, texto }) {

@@ -7,6 +7,7 @@ import Buscador from '../../componentes/Buscador'
 import EncabezadoPagina from '../../componentes/EncabezadoPagina'
 import EstadoVacio from '../../componentes/EstadoVacio'
 import EtiquetaEstado, { estadoStock } from '../../componentes/EtiquetaEstado'
+import Paso from '../../componentes/Paso'
 import { useNotificar } from '../../contexto/Notificaciones'
 import { formatoFecha, formatoHora, formatoMoneda, hoyLima } from '../../utils/formato'
 import FormularioCliente from './FormularioCliente'
@@ -17,15 +18,6 @@ function avisoCantidad(producto, cantidad) {
   const disponible = Math.max(producto.stock_disponible, 0)
   if (cantidad > disponible) return `Solo quedan ${disponible}.`
   return ''
-}
-
-function Paso({ numero, completo, children }) {
-  return (
-    <div className={`paso ${completo ? 'completo' : ''}`}>
-      <span className="paso-numero">{completo ? <i className="bi bi-check-lg" /> : numero}</span>
-      {children}
-    </div>
-  )
 }
 
 function DisponiblePildora({ producto }) {
