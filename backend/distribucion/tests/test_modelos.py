@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
-from config.demo import crear_pedido
+from ventas.servicios import crear_pedido
 from config.pruebas import crear_cliente, crear_producto, crear_usuario
 from distribucion.models import Entrega
 from ventas.models import Pedido

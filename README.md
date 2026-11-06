@@ -17,7 +17,7 @@ Apps del backend: `usuarios`, `ventas`, `inventario`, `distribucion` y `recomend
 | Sprint | Contenido | Estado |
 |---|---|---|
 | 0 | Preparación: repositorio, Docker, 13 modelos, JWT, admin, `seed_demo`, React con inicio de sesión y menú por rol | ✅ listo |
-| 1 | Ventas (HU01 a HU04) | pendiente |
+| 1 | Ventas (HU01 a HU04): usuarios y roles, clientes, stock disponible con reserva, registro de pedido | ✅ listo |
 | 2 | Inventario (HU05 a HU08) | pendiente |
 | 3 | Distribución (HU09 a HU11) | pendiente |
 | 4 | Recomendaciones explicadas (HU12 a HU15) | pendiente |
@@ -75,7 +75,7 @@ En desarrollo, Vite envía las llamadas `/api` al servidor Django, así que no h
 
 | Usuario | Rol | Qué ve |
 |---|---|---|
-| `demo_vendedor` | Vendedor | Nuevo pedido, clientes, consulta de stock |
+| `demo_vendedor` | Vendedor | Nuevo pedido, clientes, consulta de stock disponible |
 | `demo_almacenero` | Almacenero | Pedidos por preparar, ingreso de mercadería, conteo físico |
 | `demo_repartidor` | Repartidor | Entregas programadas |
 | `demo_gerente` | Gerente | Todo, más recomendaciones, reportes y administración de usuarios |
@@ -107,5 +107,9 @@ npm run build                           # el frontend debe compilar sin errores
 
 - Interfaz en español; fechas dd/mm/aaaa, moneda en S/ y zona horaria America/Lima.
 - `hora_registro` y `hora_conformidad` de cada pedido las pone el sistema, nunca el usuario.
+- **Reserva de stock** (tesis 7.3 y Tabla IV): stock disponible = `stock_actual` − cantidades de los pedidos en estado
+  `en_almacen`. Al registrar un pedido, cada línea debe caber en el disponible («Solo quedan N»). `stock_actual` baja
+  recién cuando el almacén confirma el pedido (HU06).
+- Lo que crea un usuario DEMO (clientes, pedidos, usuarios) también queda marcado como DEMO.
 - El rol se valida en el backend en cada endpoint; el menú del frontend solo es una ayuda visual. El gerente puede ver todo.
 - No se suben contraseñas ni datos reales de la empresa al repositorio (`.env`, `*.xlsx` y los modelos entrenados están en `.gitignore`).

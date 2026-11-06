@@ -1,2 +1,9 @@
-# Los endpoints de ventas se agregan en el Sprint 1 (HU01 a HU04).
-urlpatterns = []
+from rest_framework.routers import SimpleRouter
+
+from . import views
+
+router = SimpleRouter()
+router.register("clientes", views.ClienteViewSet, basename="cliente")
+router.register("pedidos", views.PedidoViewSet, basename="pedido")
+
+urlpatterns = router.urls

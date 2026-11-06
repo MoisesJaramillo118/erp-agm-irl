@@ -21,6 +21,20 @@ export function formatoFechaHora(valor) {
   return `${fecha} ${hora}`
 }
 
+// Fecha de hoy en Lima como "aaaa-mm-dd" (el formato de los campos de fecha y de la API).
+export function hoyLima(diasMas = 0) {
+  const hoy = new Date().toLocaleDateString('en-CA', { timeZone: ZONA })
+  if (!diasMas) return hoy
+  const f = new Date(`${hoy}T12:00:00Z`)
+  f.setUTCDate(f.getUTCDate() + diasMas)
+  return f.toISOString().slice(0, 10)
+}
+
+export function formatoHora(valor) {
+  if (!valor) return '—'
+  return new Date(valor).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: ZONA })
+}
+
 export function formatoMoneda(valor) {
   const n = Number(valor ?? 0)
   return 'S/ ' + n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })

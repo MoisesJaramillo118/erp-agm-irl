@@ -21,5 +21,14 @@ def crear_producto(codigo="P-001", precio="10.00", stock=100, minimo=20, categor
     )
 
 
+def api_como(usuario):
+    """Cliente de API ya autenticado como ``usuario``."""
+    from rest_framework.test import APIClient
+
+    api = APIClient()
+    api.force_authenticate(user=usuario)
+    return api
+
+
 def crear_cliente(ruc_dni="20100000001", nombre="Cliente de prueba", distrito="Comas"):
     return Cliente.objects.create(nombre=nombre, ruc_dni=ruc_dni, distrito=distrito)

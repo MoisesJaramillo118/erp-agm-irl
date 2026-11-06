@@ -1,10 +1,26 @@
 from django.conf import settings
 from django.db import models, transaction
+from django.db.models import F, Q, Sum
+from django.db.models.functions import Coalesce
 from django.utils import timezone
+
+# Estado del pedido que reserva stock (ventas.Pedido.Estado.EN_ALMACEN). Se usa el valor
+# directamente para no importar ventas desde inventario.
+ESTADO_QUE_RESERVA = "en_almacen"
 
 
 class StockInsuficiente(Exception):
     """Se intentó sacar más mercadería de la que hay en el stock."""
+
+
+class ProductoQuerySet(models.QuerySet):
+    def con_disponible(self):
+        """Agrega ``reservado`` (unidades en pedidos en almacén) y ``disponible`` (stock_actual − reservado)."""
+        reservado = Coalesce(
+            Sum("detalles_pedido__cantidad", filter=Q(detalles_pedido__pedido__estado=ESTADO_QUE_RESERVA)),
+            0,
+        )
+        return self.annotate(reservado=reservado, disponible=F("stock_actual") - reservado)
 
 
 class Categoria(models.Model):
@@ -29,6 +45,8 @@ class Producto(models.Model):
     stock_minimo = models.IntegerField(default=0)
     es_demo = models.BooleanField("dato DEMO", default=False, db_index=True)
 
+    objects = ProductoQuerySet.as_manager()
+
     class Meta:
         verbose_name = "producto"
         verbose_name_plural = "productos"
@@ -37,9 +55,15 @@ class Producto(models.Model):
     def __str__(self):
         return f"{self.codigo} · {self.descripcion}"
 
+    def stock_reservado(self):
+        """Unidades comprometidas en pedidos que siguen en el almacén (aún no descontadas)."""
+        total = self.detalles_pedido.filter(pedido__estado=ESTADO_QUE_RESERVA).aggregate(t=Sum("cantidad"))["t"]
+        return total or 0
+
     def consultar_stock(self):
-        """Stock disponible. Es el mismo número que ve el vendedor (HU03)."""
-        return self.stock_actual
+        """Stock disponible = stock_actual − reservado por pedidos en almacén (HU03).
+        stock_actual recién baja cuando el almacén confirma el pedido (HU06)."""
+        return self.stock_actual - self.stock_reservado()
 
     @transaction.atomic
     def actualizar_stock(self, cantidad, tipo, usuario):

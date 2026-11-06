@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.test import TestCase
 from django.utils import timezone
 
-from config.demo import crear_pedido
+from ventas.servicios import crear_pedido
 from config.pruebas import crear_cliente, crear_producto, crear_usuario
 from inventario.models import MovimientoInventario, StockInsuficiente
 from ventas.models import Pedido, PedidoNoPendiente

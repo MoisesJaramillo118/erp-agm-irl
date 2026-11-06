@@ -33,10 +33,27 @@ function mensajeDeError(estado, datos) {
   if (estado === 403) return 'Tu rol no tiene permiso para esta acción.'
   if (datos && typeof datos === 'object') {
     if (typeof datos.detail === 'string') return datos.detail
-    const primero = Object.values(datos).flat()[0]
-    if (typeof primero === 'string') return primero
+    const textos = textosDeError(datos)
+    if (textos.length) return textos.join(' ')
   }
   return 'Ocurrió un error inesperado. Inténtalo de nuevo.'
+}
+
+// Junta todos los mensajes de error de DRF, aunque vengan anidados por campo o por línea.
+function textosDeError(valor) {
+  if (typeof valor === 'string') return [valor]
+  if (Array.isArray(valor)) return valor.flatMap(textosDeError)
+  if (valor && typeof valor === 'object') return Object.values(valor).flatMap(textosDeError)
+  return []
+}
+
+// Errores por campo ({campo: "mensaje"}) para mostrarlos debajo de cada control del formulario.
+export function erroresPorCampo(error) {
+  const salida = {}
+  if (error?.datos && typeof error.datos === 'object' && !Array.isArray(error.datos)) {
+    for (const [campo, valor] of Object.entries(error.datos)) salida[campo] = textosDeError(valor).join(' ')
+  }
+  return salida
 }
 
 async function pedir(ruta, { metodo = 'GET', cuerpo, token } = {}) {

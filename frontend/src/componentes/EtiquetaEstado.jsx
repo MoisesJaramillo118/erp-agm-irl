@@ -13,6 +13,19 @@ const ESTADOS = {
   aceptada: { texto: 'Aceptada', color: 'success' },
   rechazada: { texto: 'Rechazada', color: 'danger' },
   demo: { texto: 'DEMO', color: 'dark' },
+  activo: { texto: 'Activo', color: 'success' },
+  inactivo: { texto: 'Inactivo', color: 'secondary' },
+  // Stock disponible
+  con_stock: { texto: 'Disponible', color: 'success' },
+  bajo_minimo: { texto: 'Bajo mínimo', color: 'warning', oscuro: true },
+  sin_stock: { texto: 'Sin stock', color: 'danger' },
+}
+
+// Estado del stock según el disponible (stock_actual − reservado) frente al mínimo.
+export function estadoStock(producto) {
+  if (producto.stock_disponible <= 0) return 'sin_stock'
+  if (producto.stock_disponible < producto.stock_minimo) return 'bajo_minimo'
+  return 'con_stock'
 }
 
 export default function EtiquetaEstado({ estado }) {

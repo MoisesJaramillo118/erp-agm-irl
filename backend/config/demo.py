@@ -26,6 +26,7 @@ from inventario.models import (
 from recomendaciones.models import Pronostico
 from usuarios.models import Usuario
 from ventas.models import Cliente, DetallePedido, Pedido
+from ventas.servicios import crear_pedido
 
 CATEGORIAS = ["Bolsas", "Vasos", "Platos", "Bandejas", "Otros"]
 
@@ -83,20 +84,6 @@ USUARIOS_DEMO = [
 
 def hay_datos_demo():
     return Producto.objects.filter(es_demo=True).exists() or Usuario.objects.filter(es_demo=True).exists()
-
-
-def crear_pedido(cliente, vendedor, items, es_demo=False, hora_registro=None):
-    """Crea un pedido con sus detalles (pares producto, cantidad) y calcula su total.
-    La hora de registro la pone el sistema; ``hora_registro`` solo se usa para sembrar datos pasados."""
-    pedido = Pedido(cliente=cliente, vendedor=vendedor, es_demo=es_demo)
-    if hora_registro is not None:
-        pedido.hora_registro = hora_registro
-    pedido.save()
-    DetallePedido.objects.bulk_create(
-        [DetallePedido(pedido=pedido, producto=p, cantidad=c, precio_unitario=p.precio) for p, c in items]
-    )
-    pedido.calcular_total()
-    return pedido
 
 
 def _contrasena_demo():

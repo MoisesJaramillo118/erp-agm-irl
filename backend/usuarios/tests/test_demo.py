@@ -92,7 +92,7 @@ class BorrarDemoTest(TestCase):
 
     def test_si_un_dato_real_depende_de_uno_demo_no_se_borra_nada(self):
         ejecutar("seed_demo", "--semanas", "12")
-        from config.demo import crear_pedido
+        from ventas.servicios import crear_pedido
         demo_producto = Producto.objects.filter(es_demo=True).first()
         real_vendedor = crear_usuario("vendedor", "real_vendedor")
         crear_pedido(crear_cliente("20555555552", "Cliente real"), real_vendedor, [(demo_producto, 1)])
