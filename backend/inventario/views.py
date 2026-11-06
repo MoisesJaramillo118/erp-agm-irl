@@ -12,7 +12,8 @@ from ventas.serializers import PedidoSerializer
 from .models import Categoria, ConteoFisico, MovimientoInventario, Producto, StockInsuficiente
 from .serializers import (ConteoDetalleSerializer, ConteoSerializer, MovimientoSerializer, ProductoStockSerializer,
                           RegistrarConteoSerializer, RegistrarIngresoSerializer)
-from .servicios import ProductoNoPermitido, registrar_conteo, registrar_ingreso
+from .servicios import (ConteoSinDiferencias, ConteoYaAjustado, ProductoNoPermitido, ajustar_conteo, registrar_conteo,
+                        registrar_ingreso)
 
 SOLO_ALMACEN = [roles_permitidos("almacenero")]
 
@@ -164,3 +165,23 @@ class ConteoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Cre
             return Response({"detail": str(error)}, status=status.HTTP_403_FORBIDDEN)
         return Response(ConteoDetalleSerializer(self.get_queryset().get(pk=conteo.pk)).data,
                         status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=["post"])
+    def ajustar(self, request, pk=None):
+        """«Ajustar el stock a lo contado»: un ajuste por producto con diferencia, una sola vez por conteo."""
+        conteo = self.get_object()
+        try:
+            movimientos = ajustar_conteo(conteo, request.user)
+        except ConteoYaAjustado as error:
+            return Response({"detail": str(error)}, status=status.HTTP_409_CONFLICT)
+        except ConteoSinDiferencias as error:
+            return Response({"detail": str(error)}, status=status.HTTP_400_BAD_REQUEST)
+        except ProductoNoPermitido as error:
+            return Response({"detail": str(error)}, status=status.HTTP_403_FORBIDDEN)
+        except StockInsuficiente as error:
+            return Response({"detail": f"No se ajustó nada. {error}"}, status=status.HTTP_400_BAD_REQUEST)
+        datos = ConteoDetalleSerializer(self.get_queryset().get(pk=conteo.pk)).data
+        datos["movimientos"] = MovimientoSerializer(
+            MovimientoInventario.objects.select_related("producto", "usuario").filter(pk__in=[m.pk for m in movimientos]),
+            many=True).data
+        return Response(datos)

@@ -1,7 +1,16 @@
 """Lógica de negocio del módulo de inventario (Sprint 2)."""
 from django.db import transaction
+from django.utils import timezone
 
 from .models import ConteoFisico, DetalleConteo, MovimientoInventario, Producto
+
+
+class ConteoYaAjustado(Exception):
+    """El stock de este conteo ya se ajustó (se permite una sola vez)."""
+
+
+class ConteoSinDiferencias(Exception):
+    """Todos los productos del conteo coinciden: no hay nada que ajustar."""
 
 
 class ProductoNoPermitido(Exception):
@@ -47,3 +56,26 @@ def registrar_conteo(usuario, lineas):
         for p, fisico in lineas
     ])
     return conteo
+
+
+@transaction.atomic
+def ajustar_conteo(conteo, usuario):
+    """«Ajustar el stock a lo contado»: un movimiento de ajuste por cada producto con diferencia, con la
+    diferencia del conteo (contado − sistema) como cantidad con signo. Usuario y hora los pone el sistema.
+
+    Se suma la diferencia, no se reemplaza el stock por lo contado: si después del conteo hubo entradas o
+    salidas, se conservan. Se permite una sola vez por conteo; si un producto quedaría en negativo, no se
+    ajusta ninguno."""
+    conteo = ConteoFisico.objects.select_for_update().get(pk=conteo.pk)
+    if conteo.hora_ajuste is not None:
+        raise ConteoYaAjustado(
+            f"El stock de este conteo ya se ajustó el {timezone.localtime(conteo.hora_ajuste):%d/%m/%Y a las %H:%M}."
+        )
+    detalles = [d for d in conteo.detalles.select_related("producto").order_by("producto_id") if not d.coincide]
+    if not detalles:
+        raise ConteoSinDiferencias("Todos los productos coinciden con el sistema: no hay nada que ajustar.")
+    validar_demo(usuario, [d.producto for d in detalles])
+    movimientos = [d.producto.actualizar_stock(d.diferencia, MovimientoInventario.Tipo.AJUSTE, usuario) for d in detalles]
+    conteo.hora_ajuste = timezone.now()
+    conteo.save(update_fields=["hora_ajuste"])
+    return movimientos

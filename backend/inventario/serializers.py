@@ -83,7 +83,7 @@ class ConteoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ConteoFisico
-        fields = ("id", "fecha", "usuario_nombre", "contados", "coinciden", "exactitud", "es_demo")
+        fields = ("id", "fecha", "usuario_nombre", "contados", "coinciden", "exactitud", "hora_ajuste", "es_demo")
         read_only_fields = fields
 
     def get_contados(self, conteo):

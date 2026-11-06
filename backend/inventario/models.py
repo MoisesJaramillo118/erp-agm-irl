@@ -130,6 +130,8 @@ class ConteoFisico(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="conteos"
     )
     es_demo = models.BooleanField("dato DEMO", default=False, db_index=True)
+    # Campo técnico: cuándo se ajustó el stock a lo contado. El ajuste se permite una sola vez por conteo.
+    hora_ajuste = models.DateTimeField("hora del ajuste de stock", null=True, blank=True, editable=False)
 
     class Meta:
         verbose_name = "conteo físico"

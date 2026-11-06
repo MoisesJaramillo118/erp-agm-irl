@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { Alert, Button, Card, Col, Form, Placeholder, ProgressBar, Row, Spinner, Table } from 'react-bootstrap'
+import { Link, useSearchParams } from 'react-router-dom'
+import { Alert, Button, Card, Col, Form, Modal, Placeholder, ProgressBar, Row, Spinner, Table } from 'react-bootstrap'
 import { api } from '../../api/cliente'
 import Buscador from '../../componentes/Buscador'
 import EncabezadoPagina from '../../componentes/EncabezadoPagina'
@@ -9,7 +9,7 @@ import EtiquetaEstado from '../../componentes/EtiquetaEstado'
 import Paso from '../../componentes/Paso'
 import { useNotificar } from '../../contexto/Notificaciones'
 import useListaPaginada from '../../hooks/useListaPaginada'
-import { formatoFecha } from '../../utils/formato'
+import { formatoFecha, formatoFechaHora } from '../../utils/formato'
 
 // Color de la exactitud: verde desde 95 %, ámbar desde 80 %, rojo por debajo.
 function colorExactitud(valor) {
@@ -85,7 +85,10 @@ function ListaConteos({ onNuevo, onVer }) {
             ))}
             {items.map((c) => (
               <tr key={c.id} className="fila-enlace" onClick={() => onVer(c.id)}>
-                <td className="tabular fw-semibold">{formatoFecha(c.fecha)}{c.es_demo && <EtiquetaEstado estado="demo" />}</td>
+                <td className="tabular fw-semibold">
+                  {formatoFecha(c.fecha)}{c.es_demo && <EtiquetaEstado estado="demo" />}
+                  {c.hora_ajuste && <div><EtiquetaEstado estado="ajuste" texto="Stock ajustado" /></div>}
+                </td>
                 <td className="text-end tabular">{c.contados}</td>
                 <td className="text-end tabular">{c.coinciden}</td>
                 <td style={{ minWidth: '8rem' }}>
@@ -262,9 +265,28 @@ function NuevoConteo({ onVolver, onRegistrado }) {
 
 // ---------- Resultado de un conteo ----------
 function ResultadoConteo({ id, onVolver }) {
+  const notificar = useNotificar()
   const [conteo, setConteo] = useState(null)
   const [error, setError] = useState('')
   const [soloDiferencias, setSoloDiferencias] = useState(false)
+  const [preguntando, setPreguntando] = useState(false)
+  const [ajustando, setAjustando] = useState(false)
+
+  // «Ajustar el stock a lo contado»: un ajuste por producto con diferencia, una sola vez por conteo.
+  const ajustar = async () => {
+    setAjustando(true)
+    try {
+      const r = await api(`/inventario/conteos/${id}/ajustar/`, { metodo: 'POST' })
+      setConteo(r)
+      notificar(`Stock ajustado: ${r.movimientos.length} movimiento(s) de ajuste registrados.`)
+    } catch (e) {
+      notificar(e.message, 'error')
+      api(`/inventario/conteos/${id}/`).then(setConteo).catch(() => {})
+    } finally {
+      setAjustando(false)
+      setPreguntando(false)
+    }
+  }
 
   useEffect(() => {
     let vigente = true
@@ -324,6 +346,54 @@ function ResultadoConteo({ id, onVolver }) {
           </Card>
         </Col>
       </Row>
+
+      {conteo.hora_ajuste ? (
+        <Alert variant="success" className="d-flex flex-wrap align-items-center gap-2 mb-4">
+          <i className="bi bi-check-circle-fill" aria-hidden="true" />
+          <span className="flex-grow-1">
+            <strong>Stock ajustado a lo contado</strong> el {formatoFechaHora(conteo.hora_ajuste)}. Los ajustes quedaron en el{' '}
+            <Link to="/inventario/ingresos" className="alert-link">historial de movimientos</Link>.
+          </span>
+        </Alert>
+      ) : conDiferencia > 0 && (
+        <Card className="mb-4 tarjeta-ajuste">
+          <Card.Body className="d-flex flex-wrap align-items-center gap-3">
+            <div className="indicador-icono tono-violeta" aria-hidden="true"><i className="bi bi-sliders" /></div>
+            <div className="flex-grow-1 min-w-0" style={{ flexBasis: '20rem' }}>
+              <div className="fw-semibold">El sistema todavía tiene el stock anterior</div>
+              <div className="small text-secondary">
+                Si confías en lo contado, ajústalo: se registra un movimiento de ajuste por cada producto con diferencia, con tu
+                usuario y la hora. Solo se puede hacer una vez por conteo.
+              </div>
+            </div>
+            <Button variant="primary" onClick={() => setPreguntando(true)}><i className="bi bi-sliders" /> Ajustar el stock a lo contado</Button>
+          </Card.Body>
+        </Card>
+      )}
+
+      <Modal show={preguntando} onHide={() => !ajustando && setPreguntando(false)} centered>
+        <Modal.Header closeButton><Modal.Title as="h2" className="h5">Ajustar el stock a lo contado</Modal.Title></Modal.Header>
+        <Modal.Body>
+          <p className="mb-2">Se registrará un ajuste para {conDiferencia} producto(s):</p>
+          <ul className="list-unstyled mb-3">
+            {conteo.detalles.filter((d) => !d.coincide).map((d) => (
+              <li key={d.producto} className="d-flex justify-content-between border-bottom py-2">
+                <span>{d.descripcion}</span><Diferencia valor={d.diferencia} />
+              </li>
+            ))}
+          </ul>
+          <div className="small text-secondary">
+            Se suma la diferencia al stock actual, así que se conservan las entradas y salidas registradas después del conteo.
+            Esta acción no se puede repetir en este conteo.
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="light" className="border" disabled={ajustando} onClick={() => setPreguntando(false)}>Cancelar</Button>
+          <Button onClick={ajustar} disabled={ajustando}>
+            {ajustando ? <Spinner size="sm" animation="border" /> : <><i className="bi bi-check2" /> Sí, ajustar</>}
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Card className="tarjeta-tabla">
         <Card.Header className="d-flex flex-wrap gap-2 align-items-center justify-content-between">
