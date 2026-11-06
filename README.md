@@ -108,6 +108,9 @@ npm run build                           # el frontend debe compilar sin errores
 ## Convenciones
 
 - Interfaz en español; fechas dd/mm/aaaa, moneda en S/ y zona horaria America/Lima.
+- Diseño visual: tema propio sobre Bootstrap 5 en `frontend/src/estilos/estilos.scss` (Sass), con Bootstrap Icons y la
+  fuente Inter instalada localmente (funciona sin internet). Los componentes comunes (encabezado de página, estados
+  vacíos, píldoras de estado, avatar, buscador y avisos) están en `frontend/src/componentes/`.
 - `hora_registro` y `hora_conformidad` de cada pedido las pone el sistema, nunca el usuario.
 - **Reserva de stock** (tesis 7.3 y Tabla IV): stock disponible = `stock_actual` − cantidades de los pedidos en estado
   `en_almacen`. Al registrar un pedido, cada línea debe caber en el disponible («Solo quedan N»). `stock_actual` baja

@@ -10,6 +10,7 @@
 | Compilación del frontend | `npm run build` sin errores |
 | Pruebas en navegador (Chrome) | 25 de 25 comprobaciones correctas (menú por rol, rutas protegidas, celular) |
 | Resultado | **Aprobado** por el Product Owner el 05/11/2026 |
+| Revalidación tras el rediseño | 06/11/2026, commit `6cd93ff`: 26 de 26 comprobaciones en Chrome (ver la review del Sprint 1, sección «Rediseño de la interfaz») |
 
 ## Objetivo del sprint
 
@@ -54,25 +55,27 @@ El Sprint 0 no tiene historias de usuario: prepara la base sobre la que se const
 
 ## Evidencia (Chrome, 1280×800, datos DEMO)
 
-Las capturas se tomaron el 05/11/2026. El inicio de sesión y el menú por rol no cambiaron entre este sprint y el siguiente.
+Capturas actualizadas el 06/11/2026 con la interfaz rediseñada (commit `6cd93ff`). Muestran la funcionalidad de este
+sprint (inicio de sesión, menú por rol y validación del rol) con la presentación vigente. Las pantallas marcadas
+«Pronto» en el menú se construyen en los sprints siguientes.
 
 **Inicio de sesión**
 
 ![Inicio de sesión](inicio-de-sesion.png)
 
-**Menú del vendedor**
+**Inicio y menú del vendedor**
 
 ![Menú del vendedor](menu-vendedor.png)
 
-**Menú del almacenero**
+**Inicio y menú del almacenero**
 
 ![Menú del almacenero](menu-almacenero.png)
 
-**Menú del repartidor**
+**Inicio y menú del repartidor**
 
 ![Menú del repartidor](menu-repartidor.png)
 
-**Menú del gerente (ve todos los módulos)**
+**Inicio y menú del gerente (ve todos los módulos)**
 
 ![Menú del gerente](menu-gerente.png)
 

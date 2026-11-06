@@ -10,6 +10,7 @@
 | Compilación del frontend | `npm run build` sin errores |
 | Pruebas en navegador (Chrome) | 19 de 19 comprobaciones correctas (flujo completo de HU01 a HU04 y vista de celular) |
 | Resultado | Pendiente del visto bueno del Product Owner |
+| Rediseño de la interfaz | 06/11/2026, commit `6cd93ff` — observación de usabilidad de esta review (ver la sección «Rediseño de la interfaz») |
 
 ## Objetivo del sprint
 
@@ -60,7 +61,8 @@ registra. `stock_actual` sigue en 40 y no se crea ningún movimiento de inventar
 
 ## Evidencia (Chrome, 1280×800, datos DEMO)
 
-Capturas tomadas el 05/11/2026 sobre el commit `cd5bc2a`.
+Capturas actualizadas el 06/11/2026 con la interfaz rediseñada (commit `6cd93ff`). Las historias y sus criterios de
+aceptación son los del commit `cd5bc2a`.
 
 **HU01 — Usuarios y roles (gerente)**
 
@@ -86,6 +88,10 @@ Capturas tomadas el 05/11/2026 sobre el commit `cd5bc2a`.
 
 ![Consulta de stock](HU03-consultar-stock-bajo-minimo.png)
 
+**HU03 — Filtro «Bajo mínimo» (agregado en el rediseño)**
+
+![Filtro bajo mínimo](HU03-filtro-bajo-minimo.png)
+
 **HU04 — Registro de pedido: la cantidad supera el disponible y se avisa «Solo quedan 21»**
 
 ![Solo quedan N](HU04-registrar-pedido-solo-quedan.png)
@@ -101,6 +107,49 @@ Capturas tomadas el 05/11/2026 sobre el commit `cd5bc2a`.
 **HU03 y HU04 — Tras registrar 5 unidades, el disponible baja de 21 a 16 y lo reservado sube de 20 a 25; el stock en almacén (41) no cambia**
 
 ![Stock reservado](HU03-HU04-stock-reservado-tras-el-pedido.png)
+
+## Rediseño de la interfaz (observación de usabilidad)
+
+**Origen.** La tesis (sección 7.1) establece que la usabilidad no tiene un sprint propio: se revisa en la Sprint Review
+de cada sprint y sus observaciones vuelven al Product Backlog. En esta review el Product Owner observó que la interfaz
+debía ser más moderna e intuitiva para que el personal la use sin dificultad. La observación se atendió antes de iniciar
+el Sprint 2, sobre todas las pantallas construidas hasta ahora (Sprints 0 y 1). Commit `6cd93ff`, 06/11/2026.
+
+**Qué cambió (solo la presentación y la facilidad de uso):**
+
+- Tema visual propio sobre Bootstrap 5: paleta azul marino y azul, tipografía Inter, íconos de Bootstrap Icons,
+  tarjetas y tablas más limpias y etiquetas de estado en píldoras de colores.
+- Barra lateral oscura con un ícono por pantalla; las pantallas de sprints futuros se marcan «Pronto». La barra superior
+  muestra dónde está el usuario (por ejemplo, «Ventas › Nuevo pedido») y su menú con «Cerrar sesión».
+- Inicio de sesión en dos paneles, con la opción de mostrar la contraseña.
+- Inicio por rol: saludo, resumen del día con cifras reales (pedidos en almacén, productos bajo mínimo o sin stock,
+  clientes o usuarios) y accesos rápidos con una explicación de cada pantalla.
+- Usuarios: el rol se elige con tarjetas que explican qué ve cada rol; filtros por rol y búsqueda.
+- Clientes: avatar con iniciales, validación en vivo del RUC/DNI y sugerencia de los distritos de Lima y Callao, para que
+  el distrito se escriba siempre igual (lo usará el reparto por distrito, HU10).
+- Stock: filtros «Bajo mínimo» y «Sin stock» con su conteo, y una barra de nivel por producto.
+- Nuevo pedido: pasos numerados que se marcan al completarse, selector de cantidad con − y +, resumen fijo a la derecha,
+  atajos «Mañana» y «Pasado mañana», lista de comprobación antes de registrar, pantalla de confirmación con el número
+  del pedido y barra inferior con el total en el celular.
+- Avisos breves en la esquina al guardar y mensajes claros cuando una lista está vacía.
+
+**Qué no cambió:** las historias de usuario, sus criterios de aceptación, el modelo de datos, la arquitectura y las
+tecnologías de la tesis (React + Bootstrap 5; se agregaron Sass para personalizar Bootstrap, Bootstrap Icons y la fuente
+Inter instalada localmente). En la API solo se agregaron dos parámetros opcionales de consulta: `?estado=` en el stock
+(para los filtros) y `?por_pagina=` (para que el inicio pida solo los totales).
+
+**Relación con los prototipos (Figs. 12 a 15).** Las pantallas conservan el contenido y el flujo de los prototipos
+(buscar al cliente, agregar productos viendo el stock en ese momento, registrar con hora automática, menú por rol y
+etiquetas de estado de colores), con una presentación más moderna. Los prototipos del Sprint 0 cumplieron su función de
+explorar el diseño, y las pantallas finales se refinaron con la retroalimentación de la Sprint Review.
+
+**Verificación del rediseño:**
+
+| Verificación | Resultado |
+|---|---|
+| Pruebas automáticas del backend | **75 de 75 correctas** (2 nuevas en `inventario/tests/test_hu03_stock.py`: filtro por estado y `por_pagina`) |
+| Compilación del frontend | `npm run build` sin errores |
+| Pruebas en navegador (Chrome) | **49 de 49** comprobaciones: 26 del Sprint 0 (sesión, menú por rol, permisos, celular) y 23 del Sprint 1 (HU01 a HU04, reserva de stock, filtros y celular sin desplazamiento horizontal) |
 
 ## Observaciones
 
