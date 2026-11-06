@@ -13,7 +13,7 @@ function Marca() {
       <Logo />
       <div>
         <div className="marca-nombre">ERP AGM IRL</div>
-        <div className="marca-sub">Corporación AGM IRL</div>
+        <div className="marca-sub">Corporación AGM E.I.R.L.</div>
       </div>
     </>
   )
@@ -87,7 +87,7 @@ export default function Layout() {
       <aside className="lateral">
         <div className="lateral-marca"><Marca /></div>
         <div className="lateral-nav"><Navegacion /></div>
-        <div className="lateral-pie">© 2026 Corporación AGM IRL</div>
+        <div className="lateral-pie">© 2026 Corporación AGM E.I.R.L.</div>
       </aside>
 
       <Offcanvas show={menuAbierto} onHide={() => setMenuAbierto(false)} className="lateral-movil">

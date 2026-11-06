@@ -1,6 +1,6 @@
 # ERP AGM IRL
 
-Sistema modular de ERP con inteligencia artificial explicable para la Corporación AGM IRL (Lima).
+Sistema modular de ERP con inteligencia artificial explicable para la Corporación AGM E.I.R.L. (Lima).
 Proyecto de la tesis de Ingeniería de Sistemas (UTP). El diseño (historias de usuario, arquitectura, modelo de datos y modelo predictivo) está en la sección 8 del documento de la tesis.
 
 | Capa | Tecnología |

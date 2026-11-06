@@ -11,6 +11,7 @@
 | Pruebas en navegador (Chrome) | 25 de 25 comprobaciones correctas (menú por rol, rutas protegidas, celular) |
 | Resultado | **Aprobado** por el Product Owner el 05/11/2026 |
 | Revalidación tras el rediseño | 06/11/2026, commit `6cd93ff`: 26 de 26 comprobaciones en Chrome (ver la review del Sprint 1, sección «Rediseño de la interfaz») |
+| Nombre legal de la empresa | 06/11/2026: la interfaz muestra «Corporación AGM E.I.R.L.» (inicio de sesión, menú lateral y pie). El nombre del sistema, «ERP AGM IRL», no cambia. Capturas rehechas; 31 de 31 comprobaciones del Sprint 0 en Chrome (5 nuevas sobre el nombre) |
 
 ## Objetivo del sprint
 

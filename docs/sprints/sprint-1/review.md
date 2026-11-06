@@ -11,6 +11,7 @@
 | Pruebas en navegador (Chrome) | 19 de 19 comprobaciones correctas (flujo completo de HU01 a HU04 y vista de celular) |
 | Resultado | Pendiente del visto bueno del Product Owner |
 | Rediseño de la interfaz | 06/11/2026, commit `6cd93ff` — observación de usabilidad de esta review (ver la sección «Rediseño de la interfaz») |
+| Nombre legal de la empresa | 06/11/2026: la interfaz muestra «Corporación AGM E.I.R.L.»; capturas rehechas con los mismos nombres. 75 de 75 pruebas del backend y 54 de 54 comprobaciones en Chrome |
 
 ## Objetivo del sprint
 

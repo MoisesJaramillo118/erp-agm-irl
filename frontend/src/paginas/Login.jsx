@@ -44,12 +44,12 @@ export default function Login() {
         </div>
         <div>
           <h2 className="mb-3">Ventas, almacén y reparto en un solo lugar.</h2>
-          <p className="mb-4">El sistema de la Corporación AGM IRL para atender cada pedido más rápido y decidir la reposición con datos.</p>
+          <p className="mb-4">El sistema de la Corporación AGM E.I.R.L. para atender cada pedido más rápido y decidir la reposición con datos.</p>
           {VENTAJAS.map(([icono, texto]) => (
             <div key={icono} className="ventaja"><i className={`bi ${icono}`} aria-hidden="true" />{texto}</div>
           ))}
         </div>
-        <div className="small" style={{ color: '#8da2c0' }}>Corporación AGM IRL · Lima, Perú</div>
+        <div className="small" style={{ color: '#8da2c0' }}>Corporación AGM E.I.R.L. · Lima, Perú</div>
       </section>
 
       <section className="login-formulario">
