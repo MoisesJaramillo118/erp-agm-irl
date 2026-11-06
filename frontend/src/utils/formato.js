@@ -30,6 +30,21 @@ export function hoyLima(diasMas = 0) {
   return f.toISOString().slice(0, 10)
 }
 
+// «Jueves, 06/11/2026» (día de la semana + fecha dd/mm/aaaa, hora de Lima).
+export function fechaDeHoy() {
+  const ahora = new Date()
+  const dia = ahora.toLocaleDateString('es-PE', { weekday: 'long', timeZone: ZONA })
+  return `${dia.charAt(0).toUpperCase()}${dia.slice(1)}, ${formatoFecha(ahora)}`
+}
+
+// Saludo según la hora de Lima.
+export function saludo() {
+  const hora = Number(new Date().toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: ZONA }))
+  if (hora < 12) return 'Buenos días'
+  if (hora < 19) return 'Buenas tardes'
+  return 'Buenas noches'
+}
+
 export function formatoHora(valor) {
   if (!valor) return '—'
   return new Date(valor).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: ZONA })

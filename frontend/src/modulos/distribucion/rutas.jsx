@@ -5,7 +5,8 @@ export default {
   titulo: 'Distribución',
   rutas: [
     {
-      ruta: '/distribucion/entregas', etiqueta: 'Entregas programadas', roles: ['repartidor'],
+      ruta: '/distribucion/entregas', etiqueta: 'Entregas programadas', icono: 'bi-truck', tono: 'verde',
+      roles: ['repartidor'], sprint: 3, desc: 'Pedidos listos agrupados por distrito; registra cada entrega.',
       elemento: <PantallaPendiente titulo="Entregas programadas" sprint={3} historias="HU10 y HU11" />,
     },
   ],

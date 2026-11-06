@@ -1,11 +1,16 @@
 import { Link } from 'react-router-dom'
-import { Alert } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
+import EstadoVacio from '../componentes/EstadoVacio'
 
 export default function NoAutorizado() {
   return (
-    <Alert variant="warning">
-      <Alert.Heading className="h5">Sin permiso</Alert.Heading>
-      Tu rol no tiene acceso a esta pantalla. <Link to="/">Volver al inicio</Link>.
-    </Alert>
+    <Card className="mt-2">
+      <EstadoVacio
+        icono="bi-shield-lock" tono="rojo" titulo="Sin permiso"
+        accion={<Link to="/" className="btn btn-primary"><i className="bi bi-house" /> Volver al inicio</Link>}
+      >
+        Tu rol no tiene acceso a esta pantalla. Si crees que es un error, pide a la gerencia que revise tu rol.
+      </EstadoVacio>
+    </Card>
   )
 }

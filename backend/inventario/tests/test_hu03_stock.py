@@ -48,6 +48,27 @@ class HU03StockDisponibleTest(TestCase):
         self.assertEqual([p["codigo"] for p in api.get("/api/inventario/productos/?q=vas").data["results"]], ["VAS-5"])
         self.assertEqual(api.get("/api/inventario/productos/?q=Producto BOL").data["count"], 1)
 
+    def test_filtra_por_estado_del_disponible(self):
+        """Filtro de la consulta: sin stock, bajo mínimo y con stock, según el disponible (no el stock físico)."""
+        crear_producto("SIN-1", stock=0, minimo=10)
+        crear_producto("BAJO-1", stock=5, minimo=10)
+        reservado = crear_producto("RES-1", stock=30, minimo=10)  # 30 físicos, 25 reservados → 5 disponibles
+        crear_pedido(self.cliente, self.vendedor, [(reservado, 25)])
+        api = api_como(self.vendedor)
+
+        def codigos(estado):
+            return sorted(p["codigo"] for p in api.get(f"/api/inventario/productos/?estado={estado}").data["results"])
+
+        self.assertEqual(codigos("sin_stock"), ["SIN-1"])
+        self.assertEqual(codigos("bajo_minimo"), ["BAJO-1", "RES-1"])
+        self.assertEqual(codigos("con_stock"), ["BOL-1"])
+
+    def test_por_pagina_permite_pedir_solo_el_total(self):
+        for i in range(3):
+            crear_producto(f"X-{i}")
+        r = api_como(self.vendedor).get("/api/inventario/productos/?por_pagina=1")
+        self.assertEqual((r.data["count"], len(r.data["results"])), (4, 1))
+
     def test_el_repartidor_no_consulta_stock(self):
         r = api_como(crear_usuario("repartidor")).get("/api/inventario/productos/")
         self.assertEqual(r.status_code, 403)

@@ -4,6 +4,9 @@ import PantallaUsuarios from './PantallaUsuarios'
 export default {
   titulo: 'Administración',
   rutas: [
-    { ruta: '/usuarios', etiqueta: 'Usuarios y roles', roles: [], elemento: <PantallaUsuarios /> },
+    {
+      ruta: '/usuarios', etiqueta: 'Usuarios y roles', icono: 'bi-person-gear', tono: 'violeta', roles: [],
+      desc: 'Crea las cuentas del personal y asigna a cada uno su rol.', elemento: <PantallaUsuarios />,
+    },
   ],
 }
