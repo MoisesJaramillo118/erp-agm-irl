@@ -6,10 +6,11 @@
 | Fecha de la review | 06/11/2026 |
 | Fecha planificada (Tabla II) | 16/11 al 20/11 |
 | Commit del incremento | `10b4649` — «Sprint 2: módulo de inventario (HU05 a HU08)» (06/11/2026) |
-| Pruebas automáticas del backend | **102 de 102 correctas** (27 nuevas en este sprint + 75 de los sprints 0 y 1) |
+| Pruebas automáticas del backend | **108 de 108 correctas** (33 nuevas en este sprint, 6 de ellas del ajuste del conteo, + 75 de los sprints 0 y 1) |
 | Compilación del frontend | `npm run build` sin errores |
-| Pruebas en navegador (Chrome) | **41 de 41** comprobaciones del Sprint 2 (flujos de HU05 a HU08, permisos y celular) y **54 de 54** de regresión de los sprints 0 y 1 |
-| Resultado | Pendiente del visto bueno del Product Owner |
+| Pruebas en navegador (Chrome) | **47 de 47** comprobaciones del Sprint 2 (flujos de HU05 a HU08 con el ajuste del conteo, permisos y celular) y **54 de 54** de regresión de los sprints 0 y 1 |
+| Resultado | **Aprobado** por el Product Owner el 06/11/2026 |
+| Cambio acordado en la review | «Ajustar el stock a lo contado», commit `5efd8ab` (06/11/2026); ver la sección «Decisión tomada en la review» |
 
 ## Objetivo del sprint
 
@@ -24,7 +25,7 @@ que mide la exactitud del inventario.
 | HU05 | Como almacenero, quiero ver los pedidos pendientes en el orden en que llegan, para prepararlos sin esperar el papel. | La lista muestra cada pedido nuevo apenas se registra. | 4 (`inventario/tests/test_hu05_pedidos_por_preparar.py`) | ✅ Terminada |
 | HU06 | Como almacenero, quiero confirmar el pedido preparado, para que se descuente el stock y quede la hora de conformidad. | Al confirmar, el stock baja en las cantidades del pedido y se guarda la hora. | 7 (`inventario/tests/test_hu06_confirmar_pedido.py`) | ✅ Terminada |
 | HU07 | Como almacenero, quiero registrar el ingreso de mercadería, para mantener el stock al día. | El ingreso aumenta el stock y queda en el historial de movimientos. | 7 (`inventario/tests/test_hu07_ingresos.py`) | ✅ Terminada |
-| HU08 | Como almacenero, quiero registrar el conteo físico, para comparar el stock real con el del sistema. | El sistema muestra la diferencia de cada producto y la exactitud del conteo. | 9 (`inventario/tests/test_hu08_conteo_fisico.py`) | ✅ Terminada |
+| HU08 | Como almacenero, quiero registrar el conteo físico, para comparar el stock real con el del sistema. | El sistema muestra la diferencia de cada producto y la exactitud del conteo. *Acordado en esta review:* el stock se puede ajustar a lo contado una sola vez por conteo. | 15 (`inventario/tests/test_hu08_conteo_fisico.py` y `test_hu08_ajuste_conteo.py`) | ✅ Terminada |
 
 ### Cómo se cumple cada criterio
 
@@ -62,7 +63,7 @@ que mide la exactitud del inventario.
 - `test_el_ingreso_aumenta_el_stock_y_queda_en_el_historial` (HU07).
 - `test_muestra_la_diferencia_de_cada_producto_y_la_exactitud` (HU08): 4 productos, 2 coinciden → 50 %.
 
-## Detalle de las pruebas automáticas (102)
+## Detalle de las pruebas automáticas (108)
 
 | Archivo | Pruebas | Sprint |
 |---|---|---|
@@ -70,9 +71,10 @@ que mide la exactitud del inventario.
 | `inventario/tests/test_hu06_confirmar_pedido.py` | 7 | 2 |
 | `inventario/tests/test_hu07_ingresos.py` | 7 | 2 |
 | `inventario/tests/test_hu08_conteo_fisico.py` | 9 | 2 |
+| `inventario/tests/test_hu08_ajuste_conteo.py` | 6 | 2 |
 | Pruebas del Sprint 1 (HU01 a HU04 y filtros del rediseño) | 35 | 1 |
 | Pruebas del Sprint 0 (modelos, autenticación y datos DEMO) | 40 | 0 |
-| **Total** | **102** | |
+| **Total** | **108** | |
 
 ## Evidencia (Chrome, 1280×800, datos DEMO)
 
@@ -120,6 +122,18 @@ que mide la exactitud del inventario.
 
 ![Diferencias y exactitud](HU08-diferencias-y-exactitud.png)
 
+**HU08 — «Ajustar el stock a lo contado»: la confirmación muestra el ajuste de cada producto**
+
+![Confirmar ajuste](HU08-ajustar-stock-confirmacion.png)
+
+**HU08 — Stock ajustado: el conteo queda marcado y el botón ya no aparece (una sola vez por conteo)**
+
+![Stock ajustado](HU08-stock-ajustado.png)
+
+**HU08 — Los movimientos de ajuste (−4 y +2), con usuario y hora, en el historial**
+
+![Ajustes en el historial](HU08-ajustes-en-el-historial.png)
+
 ## Decisiones de implementación (no cambian el diseño)
 
 - **Recarga periódica.** La lista del almacén se actualiza cada 10 segundos, como permite el prompt («puede ser con
@@ -138,13 +152,22 @@ que mide la exactitud del inventario.
   `ingresos/`, `movimientos/`, `conteos/` y `categorias/`; el listado de productos acepta `?categoria=`. Todos validan
   el rol en el backend (almacenero y gerente).
 
-## Para decidir en esta review
+## Decisión tomada en la review
 
-- **Ajuste del stock después del conteo.** El modelo de datos tiene el tipo de movimiento «ajuste» (Fig. 10), pero
-  ninguna historia de usuario dice cuándo se usa. Hoy el conteo **solo compara**: no corrige el stock del sistema, así
-  que una diferencia seguirá apareciendo en el siguiente conteo. Propuesta: en el resultado del conteo, un botón «Ajustar
-  el stock a lo contado» que cree un movimiento de ajuste por cada producto con diferencia. No se implementó porque no
-  está en la Tabla V; queda a criterio del Product Owner.
+| Tema | Decisión del Product Owner |
+|---|---|
+| Ajuste del stock después del conteo | Se agrega en el resultado del conteo el botón «Ajustar el stock a lo contado». Crea un movimiento de tipo «ajuste» (Fig. 10) por cada producto con diferencia, con usuario y hora del sistema, y se puede usar una sola vez por conteo. |
+
+Cómo quedó (commit `5efd8ab`):
+
+- La cantidad del ajuste es la diferencia del conteo (contado − sistema), con signo. Se **suma** al stock actual en vez
+  de reemplazarlo por lo contado, para no borrar las entradas o salidas registradas después del conteo.
+- Antes de ajustar se pide confirmación con la lista de productos y su diferencia. Después, el conteo queda marcado
+  «Stock ajustado» con la fecha y la hora, y el botón desaparece; un segundo intento se rechaza (409).
+- Si algún producto quedaría con stock negativo, no se ajusta ninguno. Si todo coincide, no hay nada que ajustar.
+- La exactitud del conteo no cambia con el ajuste: mide cómo estaba el inventario cuando se contó.
+- Para recordar que un conteo ya se ajustó se agregó el campo técnico `hora_ajuste` en ConteoFisico (migración
+  `0003`), igual que `es_demo`: no cambia las relaciones ni los demás atributos del modelo de datos.
 
 ## Observaciones
 
